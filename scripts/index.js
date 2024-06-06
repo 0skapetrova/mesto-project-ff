@@ -17,8 +17,6 @@ function createCard(card, deleteCard) {
         deleteCard(evt.target);
     })
 
-    // cardsList.append(cardElement);
-
     return cardElement;
 }
 
