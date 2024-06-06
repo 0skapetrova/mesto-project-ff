@@ -11,6 +11,7 @@ function createCard(i) {
             const listItem = eventTarget.closest('.places__item');
             listItem.remove();
         });
+    return cardElement;
 }
 
 for (let i = 0; i < initialCards.length; i++) {
