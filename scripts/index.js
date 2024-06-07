@@ -14,18 +14,16 @@ function createCard(card, deleteCard) {
     const deleteButton = cardElement.querySelector('.card__delete-button');
     
     deleteButton.addEventListener('click', function(evt) {
-        deleteCard(evt.target);
+        deleteCard(cardElement);
     })
 
     return cardElement;
 }
 
-function deleteCard (eventTarget) {
-    const listItem = eventTarget.closest('.places__item');
-    listItem.remove();
+function deleteCard (element) {
+    element.remove();
 }
 
-initialCards.forEach(function(item) {    
-    createCard(item, deleteCard);
+initialCards.forEach(function(item) {
     cardsList.append(createCard(item, deleteCard));
 })
