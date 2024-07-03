@@ -1,5 +1,3 @@
-import { openPopupImage } from "../index";
-
 //создает карточку на основе переданных данных из объекта, добавляет слушатели на кнопку закрытия, сердечко и на картинку
 function createCard (cardTemplate, card, deleteCard, like, openPopupImage) {
     const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
