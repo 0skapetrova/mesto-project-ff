@@ -27,6 +27,8 @@ export const initialCards = [
     }
 ];
 
+
+//создает карточку на основе переданных данных из объекта, добавляет слушатели на кнопку закрытия, сердечко и на картинку
 function createCard ( cardTemplate, card, deleteCard, like, popupImageOpen ) {
     const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
     
@@ -57,9 +59,11 @@ function createCard ( cardTemplate, card, deleteCard, like, popupImageOpen ) {
     return cardElement;
 };
 
+
 function deleteCard (element) {
     element.remove();
 };
+
 
 function like (button) {
   button.classList.toggle('card__like-button_is-active');
