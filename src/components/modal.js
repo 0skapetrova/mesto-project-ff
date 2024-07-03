@@ -2,50 +2,42 @@ import { deleteCard, like } from "./cards";
 import { popupEdit, popupAdd, cardTemplate, cardsList } from "../index";
 import { createCard } from "./cards";
 
+
 function popupOpen (popup) {
     popup.classList.add('popup_is-animated');
     const open = (popup) => {
         popup.classList.add('popup_is-opened');
-        addEscHandler()
-        addOverlayClickHandler()
+        document.addEventListener('click', handleOverlayClick);
+        document.addEventListener('keydown', handleEsc);
     };        
     setTimeout(open, 1, popup);
 };
 
 function popupClose (popup) {
-    // console.log(popup.classList);
     popup.classList.remove('popup_is-opened');
     const notAnimated = (popup) => {
         popup.classList.remove('popup_is-animated');
     };
     setTimeout(notAnimated, 600, popup);
-    
+    document.removeEventListener('click', handleOverlayClick);
+    document.removeEventListener('keydown', handleEsc);
 };
 
-function addOverlayClickHandler () {
-    const handleOverlayClick = (evt) => {
-        const closestPopup = evt.target.parentElement.closest('.popup');
+function handleOverlayClick (evt) {
+    const closestPopup = evt.target.parentElement.closest('.popup');
         const popupIsOpened = document.querySelector('.popup_is-opened');
         if (!closestPopup && popupIsOpened) {
-          popupClose(popupIsOpened);
-          document.removeEventListener('click', handleOverlayClick);
-        }
+          popupClose(popupIsOpened);          
+        };
+};
+
+function handleEsc (evt) {
+    if (evt.code === "Escape") {  
+        const popupIsOpened = document.querySelector('.popup_is-opened');
+        popupClose(popupIsOpened);        
       };
+};
 
-    document.addEventListener('click', handleOverlayClick);
-}
-
-function addEscHandler () {
-    const handleEsc = (evt) => {        
-        if (evt.code === "Escape") {  
-            const popupIsOpened = document.querySelector('.popup_is-opened');          
-            console.log(popupIsOpened);
-            popupClose(popupIsOpened);
-            document.removeEventListener('keydown', handleEsc);
-          }
-    };
-    document.addEventListener('keydown', handleEsc);
-}
   
 const profileForm = document.querySelector('form[name="edit-profile"]');
 const profileInfo = document.querySelector('.profile__info');
@@ -73,8 +65,6 @@ function handleProfileFormSubmit(evt, close, popup) {
 profileForm.addEventListener('submit', function(evt) {
     handleProfileFormSubmit(evt, popupClose, popupEdit)
   });
-
-
 
 
 const imageForm = document.querySelector('form[name="new-place"]');
@@ -115,4 +105,4 @@ function popupImageOpen( cardImage ) {
     popupOpen(popupImage);
   };
 
-export { popupOpen, popupClose, popupImageOpen, handleProfileFormSubmit, handleImageFormSubmit, addEscHandler, addOverlayClickHandler };
+export { popupOpen, popupClose, popupImageOpen };

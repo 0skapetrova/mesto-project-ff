@@ -1,4 +1,4 @@
-import { addEscHandler, addOverlayClickHandler, popupImageOpen } from "./modal";
+import { popupImageOpen } from "./modal";
 
 export const initialCards = [
     {
