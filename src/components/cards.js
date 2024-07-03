@@ -1,3 +1,5 @@
+import { addEscHandler, addOverlayClickHandler, popupImageOpen } from "./modal";
+
 export const initialCards = [
     {
       name: "Архыз",
@@ -25,9 +27,7 @@ export const initialCards = [
     }
 ];
 
-
-
-function createCard(cardTemplate, card, deleteCard) {
+function createCard ( cardTemplate, card, deleteCard, like, popupImageOpen ) {
     const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
     
     const cardImage = cardElement.querySelector('.card__image');
@@ -41,15 +41,31 @@ function createCard(cardTemplate, card, deleteCard) {
     
     deleteButton.addEventListener('click', function(evt) {
         deleteCard(cardElement);
-    })
+    });
+
+    const likeBtn = cardElement.querySelector('.card__like-button');
+
+    likeBtn.addEventListener('click', function(evt) {
+        like(evt.target);
+    });
+
+    cardImage.addEventListener('click', function(evt) {
+      evt.stopPropagation();
+      popupImageOpen( cardImage );
+    });
 
     return cardElement;
-}
+};
 
 function deleteCard (element) {
     element.remove();
-}
+};
+
+function like (button) {
+  button.classList.toggle('card__like-button_is-active');
+};
 
 
 
-export {createCard, deleteCard};
+
+export { createCard, deleteCard, like };
