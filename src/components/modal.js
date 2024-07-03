@@ -1,45 +1,39 @@
+//Добавляем класс для анимации всем попапам
+const popups = document.querySelectorAll('.popup');
+popups.forEach((popup) => {
+    popup.classList.add('popup_is-animated')
+});
+
 //открывает попап и добавляет слушатели закрытия для оверлея и Esc
 function openPopup (popup) {
-    popup.classList.add('popup_is-animated');
-    const open = (popup) => {
-        popup.classList.add('popup_is-opened');
-        document.addEventListener('click', handleOverlayClick);
-        document.addEventListener('keydown', handleEsc);
-    };        
-    setTimeout(open, 1, popup);
+    popup.classList.add('popup_is-opened');
+    popup.addEventListener('click', handleOverlayClick);
+    document.addEventListener('keydown', handleEsc);
 };
 
 //закрывает попап и снимает слушатели
 function closePopup (popup) {
     popup.classList.remove('popup_is-opened');
-    const notAnimated = (popup) => {
-        popup.classList.remove('popup_is-animated');
-    };
-    setTimeout(notAnimated, 600, popup);
-    document.removeEventListener('click', handleOverlayClick);
+    popup.removeEventListener('click', handleOverlayClick);
     document.removeEventListener('keydown', handleEsc);
 };
 
 //обработчик клика по оверлею
 function handleOverlayClick (evt) {
-    const closestPopup = evt.target.parentElement.closest('.popup');
-    const popupIsOpened = document.querySelector('.popup_is-opened');
-    const closestForm = popupIsOpened.querySelector('.popup__form');
-        //проверяем, что клик был вне попапа и что есть открытый попап
-        if (!closestPopup && popupIsOpened) {
-          closePopup(popupIsOpened);    
-          closestForm.reset();      
-        };
+    evt.stopPropagation();
+    const evtTarget = evt.target;
+    if (evtTarget.classList.contains('popup_is-opened')) {
+        closePopup(evtTarget.closest('.popup'));
+    };
 };
 
 //обработчик нажатия Escape
 function handleEsc (evt) {
+    evt.stopPropagation();
     const popupIsOpened = document.querySelector('.popup_is-opened');
-    const closestForm = popupIsOpened.querySelector('.popup__form');
-    if (evt.code === "Escape") {         
-        closePopup(popupIsOpened);   
-        closestForm.reset();     
-      };
+    if (evt.code === "Escape") {
+        closePopup (popupIsOpened);
+    };
 };
 
 export { openPopup, closePopup };
