@@ -1,8 +1,4 @@
-//Добавляем класс для анимации всем попапам
-const popups = document.querySelectorAll('.popup');
-popups.forEach((popup) => {
-    popup.classList.add('popup_is-animated')
-});
+
 
 //открывает попап и добавляет слушатели закрытия для оверлея и Esc
 function openPopup (popup) {

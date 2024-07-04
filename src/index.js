@@ -29,7 +29,11 @@ const formAddNewCard = document.querySelector('form[name="new-place"]');
 const inputNameFormAddNewCard = formAddNewCard.querySelector('.popup__input_type_card-name');
 const inputUrlFormAddNewCard = formAddNewCard.querySelector('.popup__input_type_url');
 
-
+//Добавляем класс для анимации всем попапам
+const popups = document.querySelectorAll('.popup');
+popups.forEach((popup) => {
+    popup.classList.add('popup_is-animated')
+});
 
 //обработчик submit формы редактирования профиля
 function handleProfileFormSubmit(evt, close) {
