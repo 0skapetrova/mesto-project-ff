@@ -1,30 +1,90 @@
-// Валидация форм 
-// 1. Валидация формы «Редактировать профиль» 
-// Валидируйте форму «Редактировать профиль». Для этого заготовьте элементы ошибок по макету в «Фигме». Если поле формы «Редактировать профиль» не прошло валидацию, под ним должен появиться красный текст ошибки. 
-// Настройки валидации такие: 
-// Оба поля обязательные. 
-// В поле «Имя» должно быть от 2 до 40 символов. 
-// В поле «О себе» должно быть от 2 до 200 символов. 
-// Оба поля могут содержать только латинские и кириллические буквы, знаки дефиса и пробелы. Это нужно проверить с помощью регулярных выражений и вывести кастомное сообщение об ошибке. 
-// Во всех остальных случаях используйте стандартные браузерные тексты ошибок. 
-// Если хотя бы одно из полей не прошло валидацию, кнопка «Сохранить» должна быть неактивной. Если оба поля прошли — активной. Цвета неактивных кнопок возьмите из макета. 
-// Важно: при открытии модального окна редактирования профиля в поля формы подставляются валидные данные пользователя. Если открыть модальное окно редактирования профиля, ввести невалидные данные в поля ввода и закрыть окно, то при повторном открытии и заполнении данных формы профиля необходимо вызвать очистку ошибок валидации, которые могли остаться с прошлого открытия.
+const validationConfig = {  
+    formSelector: '.popup__form',
+    inputSelector: '.popup__input',  
+    submitButtonSelector: '.popup__button',
+    inactiveButtonClass: 'popup__button_inactive',  
+    inputErrorClass: 'popup__input-type-error',
+    errorClass: 'popup__input-error_active',
+  };
 
-// 2. Валидация формы «Новое место» 
-// Валидируйте форму добавления места. Задание аналогично предыдущему, но есть отличия: 
-// Не нужна проверка длины текста у поля ссылки. 
-// Нужна проверка того, что пользователь ввёл именно ссылку. Настройки валидации такие: 
-// Оба поля обязательные. 
-// В поле «Название» должно быть от 2 до 30 символов. 
-// В поле «Ссылка на картинку» должен быть URL. 
-// Поле «Название» может содержать латинские и кириллические буквы, знаки дефиса и пробелы. Нужно проверить с помощью регулярных выражений и вывести кастомное сообщение об ошибке. 
-// В поле «Ссылка на картинку» должен быть URL. 
-// И снова используйте стандартные браузерные тексты ошибок, кроме проверки регулярным выражением. 
-// Если хотя бы одно из полей не прошло валидацию, кнопка «Сохранить» должна быть неактивной. Если оба поля прошли — активной. Цвета неактивных кнопок те же. 
-// Важно: после добавления карточки на страницу форма очищается, при повторном открытии модального окна поля формы должны быть пустыми. Поэтому при очистке формы добавления карточки нужно вызвать задание неактивного состояния кнопке отправки, чтобы она не оставалась активной при повторном открытии модального окна с пустыми полями ввода.
+const showInputError = (formElement, inputElement, validationConfig, errorMessage) => {
+    const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+    inputElement.classList.add(validationConfig.inputErrorClass);
+    errorElement.textContent = errorMessage
+    errorElement.classList.add(validationConfig.errorClass);
+};
 
-// 3. Требования к коду валидации 
-// Разбейте код валидации на функции. Подробнее об этом говорится в теме «Валидация форм». Сделайте функцию enableValidation ответственной за включение валидации всех форм. Пусть она принимает все нужные функциям классы и селекторы элементов как объект настроек. Все необходимое про объекты вы узнали ещё в предыдущем спринте. В случае, если в поля «Имя» или «Название» введён любой символ, кроме латинской буквы, кириллической буквы и дефиса, вывести кастомное сообщение об ошибке: "Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы". Текст ошибки разместить в data-* атрибуте поля ввода. 
-// Создайте функцию clearValidation, которая очищает ошибки валидации формы и делает кнопку неактивной. Эта функция должна принимать как параметры DOM-элемент формы, для которой очищаются ошибки валидации и объект с настройками валидации. Используйте функцию clearValidation при заполнении формы профиля во время её открытия и при очистке формы добавления карточки. Вынесите функциональность валидации форм в файл validation.js. Чтобы было чуточку понятнее — пример выше, вызов функций enableValidation и clearValidation должен находиться в файле index.js. А все другие функции, включая декларирование функции enableValidation и валидации форм, — в отдельном файле validation.js.
+const hideInputError = (formElement, inputElement, validationConfig) => {
+    const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+    inputElement.classList.remove(validationConfig.inputErrorClass);
+    errorElement.classList.remove(validationConfig.errorClass);
+    errorElement.textContent = '';
+};
 
-// function 
+const isValid = (formElement, inputElement) => {
+    if (inputElement.validity.patternMismatch) {
+        inputElement.setCustomValidity(inputElement.dataset.errorMessage);
+    } else {
+        inputElement.setCustomValidity('');
+    }
+    
+    if (!inputElement.validity.valid) {
+        showInputError(formElement, inputElement, validationConfig, inputElement.validationMessage);
+    } else {
+        hideInputError(formElement, inputElement, validationConfig);
+    };
+};
+
+const hasInvalidInput = (inputList) => {
+    return inputList.some((inputElement) => {
+        return!inputElement.validity.valid;
+    });
+};
+
+const toggleButtonState = (inputList, buttonElement, validationConfig) => {
+    if (hasInvalidInput(inputList)) {
+        buttonElement.disabled = true;
+        buttonElement.classList.add(validationConfig.inactiveButtonClass);  
+    } else {
+        buttonElement.disabled = false;
+        buttonElement.classList.remove(validationConfig.inactiveButtonClass);
+    }
+};
+
+const setEventListeners = (formElement) => {
+    const inputList = Array.from(formElement.querySelectorAll(validationConfig.inputSelector));
+    const buttonElement = formElement.querySelector(validationConfig.submitButtonSelector);
+
+    toggleButtonState(inputList, buttonElement, validationConfig);
+
+    inputList.forEach((inputElement) => {
+        inputElement.addEventListener('input', () => {
+            isValid(formElement, inputElement);
+            toggleButtonState(inputList, buttonElement, validationConfig);
+        });
+    });
+};
+
+const enableValidation = () => {
+    const formList = Array.from(document.querySelectorAll(validationConfig.formSelector));
+    formList.forEach((formElement) => {
+        setEventListeners(formElement);
+    });
+};
+
+function clearValidation (formElement, validationConfig) {  
+    const inputs = Array.from(formElement.querySelectorAll(validationConfig.inputSelector));
+    
+    inputs.forEach((inputElement) => {
+        hideInputError(formElement, inputElement, validationConfig);  
+    });
+        toggleButtonState(
+            inputs,
+            formElement.querySelector(validationConfig.submitButtonSelector),
+            validationConfig
+    );
+};
+  
+
+
+export { validationConfig, enableValidation, clearValidation }

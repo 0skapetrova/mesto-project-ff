@@ -2,6 +2,9 @@ import './pages/index.css';
 import { createCard, deleteCard, like } from './components/card';
 import { initialCards } from './components/cards';
 import { openPopup, closePopup } from './components/modal';
+import { validationConfig, enableValidation, clearValidation } from './components/validation';
+
+
 
 const cardTemplate = document.querySelector('#card-template').content;
 const cardsList = document.querySelector('.places__list');
@@ -79,6 +82,7 @@ function openPopupImage ( cardImage ) {
 //слушатель для кнопки редактирования профиля
 editBtn.addEventListener('click', function(evt) {
   evt.stopPropagation();
+  clearValidation(formEditProfile, validationConfig);
   inputNameFormEditProfile.value = nameField.textContent;
   inputJobFormEditProfile.value = jobField.textContent;
   openPopup(popupTypeEdit);
@@ -88,6 +92,7 @@ editBtn.addEventListener('click', function(evt) {
 addBtn.addEventListener('click', function(evt) {
   evt.stopPropagation();
   formAddNewCard.reset();
+  clearValidation(formAddNewCard, validationConfig);
   openPopup(popupTypeAdd);
 });
 
@@ -114,3 +119,5 @@ formAddNewCard.addEventListener('submit', function(evt) {
 initialCards.forEach(function(item) {
   cardsList.append(createCard(cardTemplate, item, deleteCard, like, openPopupImage));
 });
+
+enableValidation();
