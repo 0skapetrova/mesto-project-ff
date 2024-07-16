@@ -1,12 +1,3 @@
-const validationConfig = {  
-    formSelector: '.popup__form',
-    inputSelector: '.popup__input',  
-    submitButtonSelector: '.popup__button',
-    inactiveButtonClass: 'popup__button_inactive',  
-    inputErrorClass: 'popup__input-type-error',
-    errorClass: 'popup__input-error_active',
-  };
-
 const showInputError = (formElement, inputElement, validationConfig, errorMessage) => {
     const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
     inputElement.classList.add(validationConfig.inputErrorClass);
@@ -21,7 +12,7 @@ const hideInputError = (formElement, inputElement, validationConfig) => {
     errorElement.textContent = '';
 };
 
-const isValid = (formElement, inputElement) => {
+const isValid = (formElement, inputElement, validationConfig) => {
     if (inputElement.validity.patternMismatch) {
         inputElement.setCustomValidity(inputElement.dataset.errorMessage);
     } else {
@@ -51,7 +42,7 @@ const toggleButtonState = (inputList, buttonElement, validationConfig) => {
     }
 };
 
-const setEventListeners = (formElement) => {
+const setEventListeners = (formElement, validationConfig) => {
     const inputList = Array.from(formElement.querySelectorAll(validationConfig.inputSelector));
     const buttonElement = formElement.querySelector(validationConfig.submitButtonSelector);
 
@@ -59,7 +50,7 @@ const setEventListeners = (formElement) => {
 
     inputList.forEach((inputElement) => {
         inputElement.addEventListener('input', () => {
-            isValid(formElement, inputElement);
+            isValid(formElement, inputElement, validationConfig);
             toggleButtonState(inputList, buttonElement, validationConfig);
         });
     });
@@ -68,7 +59,7 @@ const setEventListeners = (formElement) => {
 const enableValidation = (validationConfig) => {
     const formList = Array.from(document.querySelectorAll(validationConfig.formSelector));
     formList.forEach((formElement) => {
-        setEventListeners(formElement);
+        setEventListeners(formElement, validationConfig);
     });
 };
 
@@ -87,4 +78,4 @@ function clearValidation (formElement, validationConfig) {
   
 
 
-export { validationConfig, enableValidation, clearValidation }
+export { enableValidation, clearValidation }
