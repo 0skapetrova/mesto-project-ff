@@ -1,5 +1,3 @@
-
-
 //открывает попап и добавляет слушатели закрытия для оверлея и Esc
 function openPopup (popup) {
     popup.classList.add('popup_is-opened');
