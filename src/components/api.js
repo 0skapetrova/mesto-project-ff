@@ -1,7 +1,3 @@
-// Токен: 8fbe9b57-b101-4d39-9a96-f458ef7d7562
-// Идентификатор группы: wff-cohort-19
-// Адрес сервера проекта Mesto: https://mesto.nomoreparties.co.
-
 const config = {
   baseUrl: 'https://mesto.nomoreparties.co/wff-cohort-19',
   headers: {

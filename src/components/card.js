@@ -16,7 +16,7 @@ function createCard (myId, cardTemplate, card, openPopupDeleteCard, openPopupIma
   //отображение количества лайков карточки
   const countLikes = (info) => {
     const likeCounter = cardElement.querySelector('.card__like-button_counter');
-    likeCounter.textContent = info
+    likeCounter.textContent = info;
   };
 
   // проверка на айди для отображения моих лайков
@@ -46,8 +46,7 @@ function createCard (myId, cardTemplate, card, openPopupDeleteCard, openPopupIma
 
   //слушатель на лайк
   likeBtn.addEventListener('click', function(evt) {
-    console.log(isMyLike)
-    like(isMyLike, evt.target, card, countLikes);
+    like(evt.target, card, countLikes);
   });
 
   countLikes(card.likes.length)
@@ -55,8 +54,8 @@ function createCard (myId, cardTemplate, card, openPopupDeleteCard, openPopupIma
   return cardElement;
 };
 
-function like (isMyLike, button, card, countLikes) {
-    if ( isMyLike && button.classList.contains('card__like-button_is-active')) {
+function like ( button, card, countLikes) {
+    if (button.classList.contains('card__like-button_is-active')) {
       unlikeCard(card)
       .then ((data) => {
         button.classList.remove('card__like-button_is-active')
@@ -70,6 +69,7 @@ function like (isMyLike, button, card, countLikes) {
       .then ((data) => {
         countLikes(data.likes.length)
         button.classList.add('card__like-button_is-active')
+        console.log((data));
       })
       .catch((err) => {
         console.log(err)

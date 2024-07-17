@@ -267,9 +267,9 @@ formDeleteCard.addEventListener('submit', function(evt) {
 enableValidation(validationConfig);
 
 Promise.all([getUserInfo(), getInitialCards()])
-  .then(([res1, res2]) => {
-    renderProfile(res1)
-    renderCards(res2)    
+  .then(([userInfo, cardInfo]) => {
+    renderProfile(userInfo)
+    renderCards(cardInfo)    
   })
   .catch((err) => {
     console.log(err)
