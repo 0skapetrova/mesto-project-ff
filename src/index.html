@@ -68,7 +68,7 @@
       <h3 class="popup__title">Новое место</h3>
       <form class="popup__form" name="new-place" novalidate>
         <div class="popup__form-field">
-          <input id="place-name-input" type="text" name="place-name" class="popup__input popup__input_type_card-name" placeholder="Название" required minlength="2" maxlength="30" pattern="[A-Za-zА-ЯЁа-яё\-]+" data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы">
+          <input id="place-name-input" type="text" name="place-name" class="popup__input popup__input_type_card-name" placeholder="Название" required minlength="2" maxlength="30" pattern="[A-Za-zА-ЯЁа-яё\-\s]+" data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы">
           <span class="place-name-input-error popup__input-error"></span>
         </div>
         <div class="popup__form-field">
@@ -83,7 +83,7 @@
     <div class="popup__content">
       <button type="button" class="popup__close"></button>
       <h3 class="popup__title">Вы уверены?</h3>
-        <form class="popup__form" name="delete"> 
+      <form class="popup__form" name="delete"> 
         <button type="submit" class="button popup__button">Да</button>
       </form>
     </div>
