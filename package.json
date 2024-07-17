@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --mode production",
-    "dev": "webpack serve"
+    "dev": "webpack serve",
+    "deploy": "gh-pages -d dist"
   },
   "author": "Stas Basov",
   "license": "ISC",
@@ -23,9 +24,7 @@
     "postcss-loader": "^8.1.1",
     "webpack": "^5.92.1",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.0.4",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "webpack-dev-server": "^5.0.4"
   },
   "dependencies": {
     "core-js": "^3.37.1"

@@ -1,7 +1,5 @@
 import { likeCard, unlikeCard } from "./api";
 
-
-
 //создает карточку на основе переданных данных из объекта, добавляет слушатели на кнопку закрытия, сердечко и на картинку
 function createCard (myId, cardTemplate, card, openPopupDeleteCard, openPopupImage ) {
   const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
@@ -22,25 +20,9 @@ function createCard (myId, cardTemplate, card, openPopupDeleteCard, openPopupIma
   };
 
   // проверка на айди для отображения моих лайков
-  // let isMyLike 
-
-  // const updateIsMyLike = () => {
-  //     isMyLike = card.likes.some(({_id}) => {
-  //       return _id === myId
-  //     });
-  //   }
-  
-  // updateIsMyLike()
-
   const isMyLike = card.likes.some(({_id}) => {
     return _id === myId
   });
-
-  // function isMyLike () {
-  //   return card.likes.some(({_id}) => {
-  //       return _id === myId
-  //     })
-  // };
 
   if (isMyLike) {
     likeBtn.classList.add('card__like-button_is-active')
