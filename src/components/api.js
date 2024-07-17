@@ -85,8 +85,7 @@ const updateAvatar = (info) => {
 }
 
 const likeCard = (card) => {
-  // return fetch(`${config.baseUrl}/cards/likes/${card._id}`, 
-  return fetch(`https://mesto.nomoreparties.co/wff-cohort-19/cards/likes/66966c2a7a34af05a7b03e17`,  
+  return fetch(`${config.baseUrl}/cards/like/${card._id}`,  
     {
     headers: config.headers,
     method: 'PUT',
@@ -100,7 +99,7 @@ const likeCard = (card) => {
 }
 
 const unlikeCard = (card) => {
-  return fetch(`${config.baseUrl}/cards/likes/${card._id}`, {
+  return fetch(`${config.baseUrl}/cards/like/${card._id}`, {
     headers: config.headers,
     method: 'DELETE',
   })

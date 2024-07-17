@@ -9,17 +9,20 @@ const myId = 'ac4375325414163f8c6ce413'
 const cardTemplate = document.querySelector('#card-template').content;
 const cardsList = document.querySelector('.places__list');
 
+//находим все модальные окна
 const popupTypeEdit = document.querySelector('.popup_type_edit');
 const popupTypeAdd = document.querySelector('.popup_type_new-card');
 const popupTypeAvatar = document.querySelector('.popup_type_avatar');
 const popupTypeDelete = document.querySelector('.popup_type_delete');
 
+//кнопки для открытия модальных окон
 const editBtn = document.querySelector('.profile__edit-button');
 const addBtn = document.querySelector('.profile__add-button');
 
 //находим аватарку
 const profileImage = document.querySelector('.profile__image');
 
+//все кнопки закрытия модальных окон
 const closeBtnArr = document.querySelectorAll('.popup__close');
 
 //находим форму редактирования профиля  
@@ -33,21 +36,25 @@ const nameField = profileInfo.querySelector('.profile__title');
 const jobField = profileInfo.querySelector('.profile__description');
 
 //находим форму изменения аватарки
-const formEditAvatar = document.querySelector('form[name="edit-avatar"]')
-const inputUrlFormEditAvatar = formEditAvatar.querySelector('.popup__input_type_avatar')
+const formEditAvatar = document.querySelector('form[name="edit-avatar"]');
+const inputUrlFormEditAvatar = formEditAvatar.querySelector('.popup__input_type_avatar');
 
 //находим форму добавления карточки
 const formAddNewCard = document.querySelector('form[name="new-place"]');
 const inputNameFormAddNewCard = formAddNewCard.querySelector('.popup__input_type_card-name');
 const inputUrlFormAddNewCard = formAddNewCard.querySelector('.popup__input_type_url');
 
-let cardToDeleteId
+//находим форму удаления карточки
+const formDeleteCard = document.querySelector('form[name="delete"]');
+
+//объявление глобальных переменных для реализации удаления карточки
+let cardElementToDelete
 let cardToDelete
 
 //Добавляем класс для анимации всем попапам
 const popups = document.querySelectorAll('.popup');
 popups.forEach((popup) => {
-    popup.classList.add('popup_is-animated')
+    popup.classList.add('popup_is-animated');
 });
 
 const validationConfig = {
@@ -61,20 +68,27 @@ const validationConfig = {
 
 //обработчик submit формы редактирования профиля
 function handleProfileFormSubmit(evt, close) {
-    evt.preventDefault(); 
+  evt.preventDefault(); 
+  renderLoading(true, popupTypeEdit);
 
-    const profileName = inputNameFormEditProfile.value;
-    const profileAbout = inputJobFormEditProfile.value;
+  const profileName = inputNameFormEditProfile.value;
+  const profileAbout = inputJobFormEditProfile.value;
 
-    const profileInfo = {
-      name: profileName,
-      about: profileAbout,
-    }
+  const profileInfo = {
+    name: profileName,
+    about: profileAbout,
+  };
 
-    updateProfileInfo(profileInfo)
-      .then((data) => {
-        renderProfile(data)
-      })
+  updateProfileInfo(profileInfo)
+    .then((data) => {
+      renderProfile(data)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+    .finally(() => {
+      renderLoading(false, popupTypeEdit)
+    })
     
     close(popupTypeEdit);
     formEditProfile.reset();
@@ -83,6 +97,7 @@ function handleProfileFormSubmit(evt, close) {
 //обработчик submit формы изменения аватарки
 function handleFormEditAvatarSubmit(evt, close) {
   evt.preventDefault(); 
+  renderLoading(true, popupTypeAvatar)
 
   const avatarUrl = {
     avatar: inputUrlFormEditAvatar.value
@@ -95,6 +110,9 @@ function handleFormEditAvatarSubmit(evt, close) {
     .catch((err) => {
       console.log(err)
     })
+    .finally(() => {
+      renderLoading(false, popupTypeAvatar)
+    })
 
   profileImage.style.backgroundImage = `url(${inputUrlFormEditAvatar.value})`;
 
@@ -104,7 +122,8 @@ function handleFormEditAvatarSubmit(evt, close) {
 
 //обработчик submit формы добавления карточки
 function handleImageFormSubmit(evt, list, createCard, template, close) {
-  evt.preventDefault();   
+  evt.preventDefault();
+  renderLoading(true, popupTypeAdd);   
 
   const cardName = inputNameFormAddNewCard.value;
   const url = inputUrlFormAddNewCard.value;
@@ -123,35 +142,74 @@ function handleImageFormSubmit(evt, list, createCard, template, close) {
     .catch((err) => {
       console.log(err)
     })
+    .finally(() => {
+      renderLoading(false, popupTypeAdd)
+    })
   
   close(popupTypeAdd);
 };
 
 //открывает просмотр картинки
 function openPopupImage ( cardImage ) {
-    const popupTypeImage = document.querySelector('.popup_type_image');
-    const popupImage = popupTypeImage.querySelector('.popup__image');
-    popupImage.src = cardImage.src;
-    popupImage.alt = cardImage.alt;
-    const popupCaption = popupTypeImage.querySelector('.popup__caption');
-    popupCaption.textContent = cardImage.alt;
-    openPopup(popupTypeImage);
-  };
+  const popupTypeImage = document.querySelector('.popup_type_image');
+  const popupImage = popupTypeImage.querySelector('.popup__image');
+  popupImage.src = cardImage.src;
+  popupImage.alt = cardImage.alt;
+  const popupCaption = popupTypeImage.querySelector('.popup__caption');
+  popupCaption.textContent = cardImage.alt;
+  openPopup(popupTypeImage);
+};
 
+//открывает модальное окно удаления карточки
+function openPopupDeleteCard (card, cardElement) {
+  cardToDelete = card
+  cardElementToDelete = cardElement
+  openPopup(popupTypeDelete);
+};
+
+//обработчик submit формы удаления карточки
+function handleDeleteFormSubmit(card, cardElement) {
+  renderLoading(true, popupTypeDelete);
+  deleteCard(card)
+    .then(() => {
+      cardElement.remove()
+      closePopup(popupTypeDelete)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+    .finally(() => {
+      renderLoading(false, popupTypeDelete)
+    })
+};
+
+//Отрисовывает карточки на основе данных с сервера
 function renderCards (data) {
   data.forEach(function(item) {
-    cardsList.append(createCard(myId, cardTemplate, item, openPopupDeleteCard, openPopupImage));
+    cardsList.prepend(createCard(myId, cardTemplate, item, openPopupDeleteCard, openPopupImage));
   })
 };
-  
+
+//Заполняет профиль на основе данных с сервера
 function renderProfile (data) {
   nameField.textContent = data.name;
   jobField.textContent = data.about;
   renderAvatar(data.avatar)
 }
-  
+
+//Загружает аватар на основе данных с сервера
 function renderAvatar (data) {
   profileImage.style.backgroundImage = `url(${data})`;
+}
+
+//Показывает состояние сохранения
+function renderLoading (isLoading, popup) {
+  const saveButton = popup.querySelector('.popup__button')
+  if (isLoading) {
+    saveButton.textContent = 'Сохранение...'
+  } else {
+    saveButton.textContent = 'Сохранить'
+  }
 }
 
 //слушатель для кнопки редактирования профиля
@@ -200,31 +258,11 @@ formAddNewCard.addEventListener('submit', function(evt) {
   handleImageFormSubmit(evt, cardsList, createCard, cardTemplate, closePopup);    
 });
 
-//находим форму удаления карточки
-const formDeleteCard = document.querySelector('form[name="delete"]');
-
-function handleDeleteFormSubmit(card) {
-  evt.preventDefault();
-  deleteCard(card)
-    .then(() => {
-      card.remove()
-      closePopup(popupTypeDelete)
-})}
-
-function openPopupDeleteCard (card) {
-  cardToDelete = card
-  openPopup(popupTypeDelete);
-}
-
 //добавляем слушатель на кнопку удаления
-formDeleteCard.addEventListener('submit', function() {
-  handleDeleteFormSubmit(card)
+formDeleteCard.addEventListener('submit', function(evt) {
+  evt.preventDefault()
+  handleDeleteFormSubmit(cardToDelete, cardElementToDelete)
 })
-
-//добавление карточек на основе переданного массива с данными при загрузке страницы
-// initialCards.forEach(function(item) {
-//   cardsList.append(createCard(cardTemplate, item, deleteCardElement, like, openPopupImage));
-// });
 
 enableValidation(validationConfig);
 
