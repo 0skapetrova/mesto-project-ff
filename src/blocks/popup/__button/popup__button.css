@@ -20,7 +20,9 @@
 }
 
 .popup__button_inactive {
-  opacity: 20%;
+  background-color: transparent;
+  color: rgba(0, 0, 0, 0.2);
+  border: 1px solid currentColor;
 }
 
 @media screen and (max-width: 568px) {

@@ -4,7 +4,9 @@ import { openPopup, closePopup } from './components/modal';
 import { enableValidation, clearValidation } from './components/validation';
 import { getUserInfo, getInitialCards, sendCardInfo, updateProfileInfo, updateAvatar, deleteCard } from './components/api';
 
-const myId = 'ac4375325414163f8c6ce413'
+let myId
+
+//= 'ac4375325414163f8c6ce413'
 
 const cardTemplate = document.querySelector('#card-template').content;
 const cardsList = document.querySelector('.places__list');
@@ -14,6 +16,8 @@ const popupTypeEdit = document.querySelector('.popup_type_edit');
 const popupTypeAdd = document.querySelector('.popup_type_new-card');
 const popupTypeAvatar = document.querySelector('.popup_type_avatar');
 const popupTypeDelete = document.querySelector('.popup_type_delete');
+const popupTypeImage = document.querySelector('.popup_type_image');
+const popupImage = popupTypeImage.querySelector('.popup__image');
 
 //кнопки для открытия модальных окон
 const editBtn = document.querySelector('.profile__edit-button');
@@ -82,16 +86,15 @@ function handleProfileFormSubmit(evt, close) {
   updateProfileInfo(profileInfo)
     .then((data) => {
       renderProfile(data)
+      close(popupTypeEdit);
+      formEditProfile.reset();
     })
     .catch((err) => {
       console.log(err)
     })
     .finally(() => {
       renderLoading(false, popupTypeEdit)
-    })
-    
-    close(popupTypeEdit);
-    formEditProfile.reset();
+    })        
 };
 
 //обработчик submit формы изменения аватарки
@@ -105,19 +108,16 @@ function handleFormEditAvatarSubmit(evt, close) {
 
   updateAvatar(avatarUrl)
     .then((data) => {
-      renderAvatar(data)
+      renderAvatar(data.avatar)
+      close(popupTypeAvatar);
+      formEditAvatar.reset();
     })
     .catch((err) => {
       console.log(err)
     })
     .finally(() => {
       renderLoading(false, popupTypeAvatar)
-    })
-
-  profileImage.style.backgroundImage = `url(${inputUrlFormEditAvatar.value})`;
-
-  close(popupTypeAvatar);
-  formEditAvatar.reset();
+    }) 
 };
 
 //обработчик submit формы добавления карточки
@@ -138,25 +138,23 @@ function handleImageFormSubmit(evt, list, createCard, template, close) {
   sendCardInfo(cardDescription)
     .then((res) => {
       list.prepend(createCard(myId, template, res, openPopupDeleteCard, openPopupImage));
+      close(popupTypeAdd);
     })
     .catch((err) => {
       console.log(err)
     })
     .finally(() => {
       renderLoading(false, popupTypeAdd)
-    })
-  
-  close(popupTypeAdd);
+    })  
 };
 
 //открывает просмотр картинки
-function openPopupImage ( cardImage ) {
-  const popupTypeImage = document.querySelector('.popup_type_image');
-  const popupImage = popupTypeImage.querySelector('.popup__image');
-  popupImage.src = cardImage.src;
-  popupImage.alt = cardImage.alt;
+function openPopupImage ( card ) {
+  console.log(card)
+  popupImage.src = card.link;
+  popupImage.alt = card.name;
   const popupCaption = popupTypeImage.querySelector('.popup__caption');
-  popupCaption.textContent = cardImage.alt;
+  popupCaption.textContent = card.name;
   openPopup(popupTypeImage);
 };
 
@@ -224,6 +222,7 @@ editBtn.addEventListener('click', function(evt) {
 //слушатель для аватарки
 profileImage.addEventListener('click', function(evt) {
   evt.stopPropagation();
+  clearValidation(formEditAvatar, validationConfig);
   openPopup(popupTypeAvatar);
 })
 
@@ -268,8 +267,9 @@ enableValidation(validationConfig);
 
 Promise.all([getUserInfo(), getInitialCards()])
   .then(([userInfo, cardInfo]) => {
+    myId = userInfo._id
     renderProfile(userInfo)
-    renderCards(cardInfo)    
+    renderCards(cardInfo)
   })
   .catch((err) => {
     console.log(err)

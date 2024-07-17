@@ -41,7 +41,7 @@ function createCard (myId, cardTemplate, card, openPopupDeleteCard, openPopupIma
 
   //слушатель открытия попапа картинки
   cardImage.addEventListener('click', function() {
-    openPopupImage(cardImage);
+    openPopupImage(card);
   });
 
   //слушатель на лайк
@@ -69,7 +69,6 @@ function like ( button, card, countLikes) {
       .then ((data) => {
         countLikes(data.likes.length)
         button.classList.add('card__like-button_is-active')
-        console.log((data));
       })
       .catch((err) => {
         console.log(err)
